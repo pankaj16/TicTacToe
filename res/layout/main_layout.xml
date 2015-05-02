@@ -3,35 +3,41 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:weightSum="3" >
 
     <ViewSwitcher
         android:id="@+id/viewswitcher"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="0" >
+        android:layout_gravity="center"
+        android:layout_weight="1" >
 
         
         <LinearLayout 
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="vertical"
+            android:layout_gravity="center"
             android:gravity="center"
             android:background="@drawable/round_corner"
-            android:layout_margin="20dp">
+            android:layout_margin="20dp"
+            android:padding="10dp">
             
-            <com.game.utils.TextViewCircularBold
-                android:id="@+id/textview_mainLayout_onePlayer"
-                style="@style/textview_bold"
+            <com.game.utils.ButtonRegularFont
+                android:id="@+id/button_mainLayout_onePlayer"
+                style="@style/button_bold"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_weight="2"
                 android:text="@string/onePlayer"/>
             
-            <com.game.utils.TextViewCircularBold
-                android:id="@+id/textview_mainLayout_twoPlayer"
-                style="@style/textview_bold"
+            <com.game.utils.ButtonRegularFont
+                android:id="@+id/button_mainLayout_twoPlayer"
+                style="@style/button_bold"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_weight="2"
                 android:text="@string/twoPlayer"/>
             
         </LinearLayout>
@@ -39,7 +45,8 @@
 
         <LinearLayout 
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
             android:background="@drawable/round_corner"
             android:layout_margin="20dp"
             android:orientation="vertical"

@@ -3,8 +3,9 @@
 
     <string name="app_name">TicTacToeGame</string>
     <string name="hello_world">Hello world!</string>
-
     <string name="onePlayer">1 Player vs Computer</string>
     <string name="twoPlayer">1 Player vs 2 Player</string>
     <string name="choice">Select an image to start</string>
+    <string name="title_activity_game">GameActivity</string>
+
 </resources>
