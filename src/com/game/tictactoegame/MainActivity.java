@@ -24,6 +24,8 @@ public class MainActivity extends Activity {
 
 	Animation slide_in_left, slide_out_right;
 
+	boolean isComputerPlayer;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -36,6 +38,7 @@ public class MainActivity extends Activity {
 	}
 
 	private void init() {
+		isComputerPlayer = true;
 		slide_in_left = AnimationUtils.loadAnimation(MainActivity.this,
 				android.R.anim.slide_in_left);
 		slide_out_right = AnimationUtils.loadAnimation(MainActivity.this,
@@ -60,6 +63,7 @@ public class MainActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
+				isComputerPlayer = true;
 				viewSwitcher.showNext();
 			}
 		});
@@ -68,6 +72,7 @@ public class MainActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
+				isComputerPlayer = false;
 				viewSwitcher.showNext();
 			}
 		});
@@ -94,6 +99,7 @@ public class MainActivity extends Activity {
 	private void startActivityWithInfo(int iconValue){
 		Intent intent = new Intent(MainActivity.this, GameActivity.class);
 		intent.putExtra(Constants.ICON, iconValue);
+		intent.putExtra(Constants.COMPUTER_PLAYER, isComputerPlayer);
 		startActivity(intent);
 	}
 	

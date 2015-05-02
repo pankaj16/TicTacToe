@@ -7,5 +7,8 @@
     <string name="twoPlayer">1 Player vs 2 Player</string>
     <string name="choice">Select an image to start</string>
     <string name="title_activity_game">GameActivity</string>
-
+	<string name="player1">Player 1 turn</string>
+	<string name="player2">Player 2 turn</string>
+	<string name="computer">Computer turn</string>
+	<string name="reset">Reset</string>
 </resources>
