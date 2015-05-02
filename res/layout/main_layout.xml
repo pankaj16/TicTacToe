@@ -1,0 +1,79 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical" >
+
+    <ViewSwitcher
+        android:id="@+id/viewswitcher"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0" >
+
+        
+        <LinearLayout 
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="@drawable/round_corner"
+            android:layout_margin="20dp">
+            
+            <com.game.utils.TextViewCircularBold
+                android:id="@+id/textview_mainLayout_onePlayer"
+                style="@style/textview_bold"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/onePlayer"/>
+            
+            <com.game.utils.TextViewCircularBold
+                android:id="@+id/textview_mainLayout_twoPlayer"
+                style="@style/textview_bold"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/twoPlayer"/>
+            
+        </LinearLayout>
+        
+
+        <LinearLayout 
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/round_corner"
+            android:layout_margin="20dp"
+            android:orientation="vertical"
+            android:gravity="center">
+            
+            <com.game.utils.TextViewCircularBold
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/textview_bold_choice"
+                android:text="@string/choice"/>
+            
+            <LinearLayout 
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center">
+            <ImageView 
+                android:id="@+id/imageview_mainLayout_cross"
+                style="@style/imageview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/image_round_corner"
+                android:src="@drawable/cross"/>
+            
+            <ImageView
+                android:id="@+id/imageview_mainLayout_circle"
+                style="@style/imageview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/image_round_corner"
+                android:src="@drawable/circle"/>
+            </LinearLayout>
+        </LinearLayout>
+        
+    </ViewSwitcher>
+
+</LinearLayout>
