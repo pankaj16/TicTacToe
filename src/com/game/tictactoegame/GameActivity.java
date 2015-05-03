@@ -7,6 +7,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -15,8 +16,10 @@ import android.widget.TextView;
 
 public class GameActivity extends Activity {
 
-	/*** Player will play with his/her choice i.e. either with x or o 
-	 which will be getting from getIntent() method***/
+	/***
+	 * Player will play with his/her choice i.e. either with x or o which will
+	 * be getting from getIntent() method
+	 ***/
 	int player1Icon;
 	int player2Icon;
 
@@ -55,18 +58,25 @@ public class GameActivity extends Activity {
 	ArrayList<Integer> cellArrayList;
 	/***
 	 * nextPlayer = 0 means firstPlayer turn,nextPlayer = 1 means secondPlayer
-	 turn
+	 * turn
 	 ***/
 	int nextPlayer;
 
+	/*** currentPlayer is for saving values at screen rotation ***/
+	int currentPlayer;
+
+	/*** variable use for when player simultaneously clicked on two different cells without any wait ***/
+	boolean isCalculationOver;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.game_layout);
-
-		init();
-		findViews();
-		listners();
+		if (savedInstanceState == null) {
+			init();
+			findViews();
+			listners();
+		}
 	}
 
 	private void init() {
@@ -75,7 +85,10 @@ public class GameActivity extends Activity {
 		for (int i = 0; i <= 8; i++) {
 			cellArrayList.add(i, 2);
 		}
+		
+		isCalculationOver = true;
 		nextPlayer = 0; // initialy first player = 0
+		currentPlayer = 1; //its 1 if screen rotated when all cells empty
 		try {
 			player1Icon = getIntent().getExtras().getInt(Constants.ICON);
 			/*** on depending intent extra value player icons will be decided ***/
@@ -126,6 +139,11 @@ public class GameActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
+				
+				if(!isCalculationOver){
+					return;
+				}
+				isCalculationOver = false;
 				switch (v.getId()) {
 				case R.id.include_0:
 					makeChanges(0);
@@ -181,17 +199,23 @@ public class GameActivity extends Activity {
 	/*** Base Method to do all calculation and operations ***/
 	private void makeChanges(int position) {
 		if (checkValidTurn(position)) {
+			/***
+			 * Storing values in current player as its now valid turn and if
+			 * screen gets rotated then we can restore value Player turn
+			 ***/
+			currentPlayer = nextPlayer;
 			setImage(position);
 			nextPlayer();
-			calculatePosition(position);
+			calculatePosition();
+		}else{
+			isCalculationOver = true;
 		}
 	}
 
 	/*** For checking if the cell is already filled or not ***/
 	private boolean checkValidTurn(int position) {
 		/***
-		 * 2 is for none/blank, if 2 means you can put x
-		  or o, it's valid turn
+		 * 2 is for none/blank, if 2 means you can put x or o, it's valid turn
 		 ***/
 		if (cellArrayList.get(position) == 2) {
 			return true;
@@ -199,8 +223,10 @@ public class GameActivity extends Activity {
 		return false;
 	}
 
-	/*** Method to show which player has the next turn to play and 
-	 set value in nextPlayer variable for code logic ***/
+	/***
+	 * Method to show which player has the next turn to play and set value in
+	 * nextPlayer variable for code logic
+	 ***/
 	private void nextPlayer() {
 		if (nextPlayer == 0) {
 			nextPlayer = 1;
@@ -211,7 +237,10 @@ public class GameActivity extends Activity {
 		}
 	}
 
-	/*** Setting image on the basis of position, nextPlayer and player1icon/player2icon value ***/
+	/***
+	 * Setting image on the basis of position, nextPlayer and
+	 * player1icon/player2icon value
+	 ***/
 	private void setImage(int position) {
 		switch (position) {
 		case 0:
@@ -251,10 +280,10 @@ public class GameActivity extends Activity {
 			break;
 		}
 	}
-	
+
 	/*** subMethod of setImage(int position) for setting image ***/
 	private void setImageDrawable(ImageView image, int position) {
-		if (nextPlayer == 0) {
+		if (currentPlayer == 0) {
 			if (player1Icon == 0) {
 				image.setImageResource(R.drawable.circle);
 			} else {
@@ -271,7 +300,10 @@ public class GameActivity extends Activity {
 		}
 	}
 
-	/*** Setting AlertDialog message on the basis of value matching to player1icon or player2icon ***/
+	/***
+	 * Setting AlertDialog message on the basis of value matching to player1icon
+	 * or player2icon
+	 ***/
 	private void setMessage(int value) {
 		if (player1Icon == value) {
 			showMessage("Player 1 wins!!!");
@@ -280,9 +312,11 @@ public class GameActivity extends Activity {
 		}
 	}
 
-	/*** Checking Diagonal, horizontal and vertical positions 
-	 and on the basis of the positions showing specific message ***/
-	private void calculatePosition(int position) {
+	/***
+	 * Checking Diagonal, horizontal and vertical positions and on the basis of
+	 * the positions showing specific message
+	 ***/
+	private void calculatePosition() {
 		/*** checking diagonal position ***/
 		if ((cellArrayList.get(0) == 0 && cellArrayList.get(4) == 0 && cellArrayList
 				.get(8) == 0)
@@ -338,7 +372,9 @@ public class GameActivity extends Activity {
 
 		for (int i = 0; i < cellArrayList.size(); i++) {
 			if (cellArrayList.get(i) == 2) {
-				return; /*** if any of the cell value is 2 means game is not over yet ***/
+				isCalculationOver = true;
+				return;
+				/*** if any of the cell value is 2 means game is not over yet ***/
 			}
 		}
 		showMessage("Tie");
@@ -357,7 +393,8 @@ public class GameActivity extends Activity {
 
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
-						Intent intent = new Intent(GameActivity.this, MainActivity.class);
+						Intent intent = new Intent(GameActivity.this,
+								MainActivity.class);
 						startActivity(intent);
 						finish();
 					}
@@ -373,9 +410,11 @@ public class GameActivity extends Activity {
 		altDialog.show();
 	}
 
-	/*** Setting to initial value ***/	
+	/*** Setting to initial value ***/
 	private void clearData() {
 		nextPlayer = 0;
+		currentPlayer = 1;
+		isCalculationOver = true;
 		playerTextView.setText(R.string.player1);
 		for (int i = 0; i < cellArrayList.size(); i++) {
 			cellArrayList.set(i, 2);
@@ -391,7 +430,89 @@ public class GameActivity extends Activity {
 		imageView7.setImageResource(R.drawable.blank);
 		imageView8.setImageResource(R.drawable.blank);
 	}
-	
+
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+		outState.putInt(Constants.PLAYER1ICON, player1Icon);
+		outState.putInt(Constants.PLAYER2ICON, player2Icon);
+		outState.putInt(Constants.NEXT_PLAYER, currentPlayer);
+		outState.putSerializable(Constants.CELL_DATA, cellArrayList);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	protected void onRestoreInstanceState(Bundle savedInstanceState) {
+		super.onRestoreInstanceState(savedInstanceState);
+		findViews();
+		listners();
+		isCalculationOver = true;
+		player1Icon = savedInstanceState.getInt(Constants.PLAYER1ICON);
+		player2Icon = savedInstanceState.getInt(Constants.PLAYER2ICON);
+		nextPlayer = savedInstanceState.getInt(Constants.NEXT_PLAYER);
+		currentPlayer = nextPlayer;
+		nextPlayer();
+		cellArrayList = new ArrayList<Integer>();
+		cellArrayList.clear();
+		cellArrayList.trimToSize();
+		cellArrayList = (ArrayList<Integer>) savedInstanceState
+				.getSerializable(Constants.CELL_DATA);
+		for (int i = 0; i < cellArrayList.size(); i++) {
+				setImageOnRestoreInstanceState(i);
+		}
+		calculatePosition();
+	}
+
+	private void setImageOnRestoreInstanceState(int position) {
+		switch (position) {
+		case 0:
+			setImageDrawableOnRestoreInstance(imageView0, position);
+			break;
+
+		case 1:
+			setImageDrawableOnRestoreInstance(imageView1, position);
+			break;
+
+		case 2:
+			setImageDrawableOnRestoreInstance(imageView2, position);
+			break;
+
+		case 3:
+			setImageDrawableOnRestoreInstance(imageView3, position);
+			break;
+
+		case 4:
+			setImageDrawableOnRestoreInstance(imageView4, position);
+			break;
+
+		case 5:
+			setImageDrawableOnRestoreInstance(imageView5, position);
+			break;
+
+		case 6:
+			setImageDrawableOnRestoreInstance(imageView6, position);
+			break;
+
+		case 7:
+			setImageDrawableOnRestoreInstance(imageView7, position);
+			break;
+
+		case 8:
+			setImageDrawableOnRestoreInstance(imageView8, position);
+			break;
+		}
+	}
+
+	private void setImageDrawableOnRestoreInstance(ImageView image, int position) {
+		if (cellArrayList.get(position) == 0) {
+			image.setImageResource(R.drawable.circle);
+		} else if (cellArrayList.get(position) == 1) {
+			image.setImageResource(R.drawable.cross);
+		} else {
+			image.setImageResource(R.drawable.blank);
+		}
+	}
+
 	@Override
 	public void onBackPressed() {
 		Intent intent = new Intent(GameActivity.this, MainActivity.class);

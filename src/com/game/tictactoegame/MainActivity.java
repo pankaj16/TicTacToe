@@ -23,6 +23,9 @@ public class MainActivity extends Activity {
     /*** for view switcher animation ***/
 	Animation slide_in_left, slide_out_right;
 	
+	/*** boolean to restore when rotating screen ***/
+	boolean isChoiceScreen;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -35,6 +38,7 @@ public class MainActivity extends Activity {
 	}
 
 	private void init() {
+		isChoiceScreen = false;
 		slide_in_left = AnimationUtils.loadAnimation(MainActivity.this,
 				android.R.anim.slide_in_left);
 		slide_out_right = AnimationUtils.loadAnimation(MainActivity.this,
@@ -60,6 +64,7 @@ public class MainActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				viewSwitcher.showNext();
+				isChoiceScreen = true;
 			}
 		});
 
@@ -89,5 +94,21 @@ public class MainActivity extends Activity {
 		startActivity(intent);
 		finish();
 	}
+	
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+		outState.putBoolean(Constants.CHOICE_SCREEN, isChoiceScreen);
+	}
 
+	@Override
+	protected void onRestoreInstanceState(Bundle savedInstanceState) {
+		super.onRestoreInstanceState(savedInstanceState);
+		findViews();
+		listners();
+		isChoiceScreen = savedInstanceState.getBoolean(Constants.CHOICE_SCREEN);
+		if(isChoiceScreen){
+			viewSwitcher.showNext();
+		}
+	}
 }
