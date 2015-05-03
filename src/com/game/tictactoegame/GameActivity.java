@@ -5,16 +5,18 @@ import com.game.utils.Constants;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class GameActivity extends Activity {
 
+	/*** Player will play with his/her choice i.e. either with x or o 
+	 which will be getting from getIntent() method***/
 	int player1Icon;
 	int player2Icon;
 
@@ -39,7 +41,9 @@ public class GameActivity extends Activity {
 	ImageView imageView7;
 	ImageView imageView8;
 
+	/*** showing player turn ***/
 	TextView playerTextView;
+	/*** for clearing screen and reset the game ***/
 	Button resetButton;
 
 	/***
@@ -51,11 +55,9 @@ public class GameActivity extends Activity {
 	ArrayList<Integer> cellArrayList;
 	/***
 	 * nextPlayer = 0 means firstPlayer turn,nextPlayer = 1 means secondPlayer
-	 * tur, nextPlayer = 2 means Computer turn
+	 turn
 	 ***/
 	int nextPlayer;
-
-	boolean isComputerPlayer;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -82,8 +84,6 @@ public class GameActivity extends Activity {
 			} else {
 				player2Icon = 1;
 			}
-			isComputerPlayer = getIntent().getExtras().getBoolean(
-					Constants.COMPUTER_PLAYER);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -113,9 +113,9 @@ public class GameActivity extends Activity {
 	}
 
 	private void listners() {
-		
+
 		resetButton.setOnClickListener(new OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
 				clearData();
@@ -126,10 +126,6 @@ public class GameActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				// 2 means computer player
-				if (nextPlayer == 2) {
-					return;
-				}
 				switch (v.getId()) {
 				case R.id.include_0:
 					makeChanges(0);
@@ -182,6 +178,7 @@ public class GameActivity extends Activity {
 		view8.setOnClickListener(onClickListener);
 	}
 
+	/*** Base Method to do all calculation and operations ***/
 	private void makeChanges(int position) {
 		if (checkValidTurn(position)) {
 			setImage(position);
@@ -193,8 +190,8 @@ public class GameActivity extends Activity {
 	/*** For checking if the cell is already filled or not ***/
 	private boolean checkValidTurn(int position) {
 		/***
-		 * check against 2 because 2 is for none/blank if 2 means you can put x
-		 * or o, it is valid turn
+		 * 2 is for none/blank, if 2 means you can put x
+		  or o, it's valid turn
 		 ***/
 		if (cellArrayList.get(position) == 2) {
 			return true;
@@ -202,26 +199,19 @@ public class GameActivity extends Activity {
 		return false;
 	}
 
+	/*** Method to show which player has the next turn to play and 
+	 set value in nextPlayer variable for code logic ***/
 	private void nextPlayer() {
-		if (isComputerPlayer) {
-			if (nextPlayer == 0) {
-				nextPlayer = 2;
-				playerTextView.setText(R.string.computer);
-			} else {
-				nextPlayer = 0;
-				playerTextView.setText(R.string.player1);
-			}
+		if (nextPlayer == 0) {
+			nextPlayer = 1;
+			playerTextView.setText(R.string.player2);
 		} else {
-			if (nextPlayer == 0) {
-				nextPlayer = 1;
-				playerTextView.setText(R.string.player2);
-			} else {
-				nextPlayer = 0;
-				playerTextView.setText(R.string.player1);
-			}
+			nextPlayer = 0;
+			playerTextView.setText(R.string.player1);
 		}
 	}
 
+	/*** Setting image on the basis of position, nextPlayer and player1icon/player2icon value ***/
 	private void setImage(int position) {
 		switch (position) {
 		case 0:
@@ -261,7 +251,8 @@ public class GameActivity extends Activity {
 			break;
 		}
 	}
-
+	
+	/*** subMethod of setImage(int position) for setting image ***/
 	private void setImageDrawable(ImageView image, int position) {
 		if (nextPlayer == 0) {
 			if (player1Icon == 0) {
@@ -280,6 +271,7 @@ public class GameActivity extends Activity {
 		}
 	}
 
+	/*** Setting AlertDialog message on the basis of value matching to player1icon or player2icon ***/
 	private void setMessage(int value) {
 		if (player1Icon == value) {
 			showMessage("Player 1 wins!!!");
@@ -288,6 +280,8 @@ public class GameActivity extends Activity {
 		}
 	}
 
+	/*** Checking Diagonal, horizontal and vertical positions 
+	 and on the basis of the positions showing specific message ***/
 	private void calculatePosition(int position) {
 		/*** checking diagonal position ***/
 		if ((cellArrayList.get(0) == 0 && cellArrayList.get(4) == 0 && cellArrayList
@@ -295,11 +289,13 @@ public class GameActivity extends Activity {
 				|| (cellArrayList.get(2) == 0 && cellArrayList.get(4) == 0 && cellArrayList
 						.get(6) == 0)) {
 			setMessage(0);
+			return;
 		} else if ((cellArrayList.get(0) == 1 && cellArrayList.get(4) == 1 && cellArrayList
 				.get(8) == 1)
 				|| (cellArrayList.get(2) == 1 && cellArrayList.get(4) == 1 && cellArrayList
 						.get(6) == 1)) {
 			setMessage(1);
+			return;
 		}
 
 		/*** Checking horizontal line ***/
@@ -310,6 +306,7 @@ public class GameActivity extends Activity {
 				|| (cellArrayList.get(6) == 0 && cellArrayList.get(7) == 0 && cellArrayList
 						.get(8) == 0)) {
 			setMessage(0);
+			return;
 		} else if ((cellArrayList.get(0) == 1 && cellArrayList.get(1) == 1 && cellArrayList
 				.get(2) == 1)
 				|| (cellArrayList.get(3) == 1 && cellArrayList.get(4) == 1 && cellArrayList
@@ -317,6 +314,7 @@ public class GameActivity extends Activity {
 				|| (cellArrayList.get(6) == 1 && cellArrayList.get(7) == 1 && cellArrayList
 						.get(8) == 1)) {
 			setMessage(1);
+			return;
 		}
 
 		/*** Checking vertical line ***/
@@ -327,6 +325,7 @@ public class GameActivity extends Activity {
 				|| (cellArrayList.get(2) == 0 && cellArrayList.get(5) == 0 && cellArrayList
 						.get(8) == 0)) {
 			setMessage(0);
+			return;
 		} else if ((cellArrayList.get(0) == 1 && cellArrayList.get(3) == 1 && cellArrayList
 				.get(6) == 1)
 				|| (cellArrayList.get(1) == 1 && cellArrayList.get(4) == 1 && cellArrayList
@@ -334,28 +333,32 @@ public class GameActivity extends Activity {
 				|| (cellArrayList.get(2) == 1 && cellArrayList.get(5) == 1 && cellArrayList
 						.get(8) == 1)) {
 			setMessage(1);
+			return;
 		}
 
 		for (int i = 0; i < cellArrayList.size(); i++) {
 			if (cellArrayList.get(i) == 2) {
-				return; // if any of the cell is 2 i.e. empty then return
+				return; /*** if any of the cell value is 2 means game is not over yet ***/
 			}
 		}
 		showMessage("Tie");
 	}
 
+	/*** Showing an AlertDialog when any of the player wins or tie ***/
 	private void showMessage(String message) {
 		AlertDialog.Builder altDialog = new AlertDialog.Builder(
 				GameActivity.this);
 		altDialog.setMessage(message);
-		altDialog.setTitle("Tic Tac Toe");
+		altDialog.setTitle("Game Over");
 		altDialog.setCancelable(false);
 
-		altDialog.setPositiveButton("Back To Menu",
+		altDialog.setPositiveButton("Back To Home",
 				new DialogInterface.OnClickListener() {
 
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
+						Intent intent = new Intent(GameActivity.this, MainActivity.class);
+						startActivity(intent);
 						finish();
 					}
 				});
@@ -370,13 +373,14 @@ public class GameActivity extends Activity {
 		altDialog.show();
 	}
 
+	/*** Setting to initial value ***/	
 	private void clearData() {
-		/*** Setting to initial value ***/
 		nextPlayer = 0;
 		playerTextView.setText(R.string.player1);
 		for (int i = 0; i < cellArrayList.size(); i++) {
 			cellArrayList.set(i, 2);
 		}
+
 		imageView0.setImageResource(R.drawable.blank);
 		imageView1.setImageResource(R.drawable.blank);
 		imageView2.setImageResource(R.drawable.blank);
@@ -386,5 +390,13 @@ public class GameActivity extends Activity {
 		imageView6.setImageResource(R.drawable.blank);
 		imageView7.setImageResource(R.drawable.blank);
 		imageView8.setImageResource(R.drawable.blank);
+	}
+	
+	@Override
+	public void onBackPressed() {
+		Intent intent = new Intent(GameActivity.this, MainActivity.class);
+		startActivity(intent);
+		finish();
+		super.onBackPressed();
 	}
 }

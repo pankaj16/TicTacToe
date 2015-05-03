@@ -24,20 +24,18 @@
             android:layout_margin="20dp"
             android:padding="10dp">
             
-            <com.game.utils.ButtonRegularFont
-                android:id="@+id/button_mainLayout_onePlayer"
-                style="@style/button_bold"
+            <com.game.utils.TextViewCircularBold 
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="2"
-                android:text="@string/onePlayer"/>
+                style="@style/textview_bold_choice"
+                android:text="@string/game_name"/>
             
             <com.game.utils.ButtonRegularFont
-                android:id="@+id/button_mainLayout_twoPlayer"
+                android:id="@+id/button_mainLayout_play"
                 style="@style/button_bold"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="2"
+                android:layout_weight="0"
                 android:text="@string/twoPlayer"/>
             
         </LinearLayout>

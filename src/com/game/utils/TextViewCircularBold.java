@@ -10,24 +10,25 @@ import android.widget.TextView;
 public class TextViewCircularBold extends TextView{
 	public TextViewCircularBold(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
-		init();
+		init(context);
 	}
 
 	public TextViewCircularBold(Context context, AttributeSet attrs) {
 		super(context, attrs);
-		init();
+		init(context);
 	}
 
 	public TextViewCircularBold(Context context) {
 		super(context);
-		init();
+		init(context);
 	}
 
-	private void init() {
+	private void init(Context context) {
 		if (!isInEditMode()) {
 			Typeface tf = Typeface.createFromAsset(getContext().getAssets(),
 					Constants.FONT_CIRCULAR);
 			setTypeface(tf);
+			setTextAppearance(context, R.style.textview_bold);
 		}
 	}
 }

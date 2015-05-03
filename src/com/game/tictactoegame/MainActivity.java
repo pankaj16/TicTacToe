@@ -14,17 +14,14 @@ import android.widget.ViewSwitcher;
 
 public class MainActivity extends Activity {
 
-	Button onePlayer;
-	Button twoPlayer;
+	Button playButton;
 
 	ImageView circleImageView;
 	ImageView crossImageView;
 
 	ViewSwitcher viewSwitcher;
-
+    /*** for view switcher animation ***/
 	Animation slide_in_left, slide_out_right;
-
-	boolean isComputerPlayer;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +35,6 @@ public class MainActivity extends Activity {
 	}
 
 	private void init() {
-		isComputerPlayer = true;
 		slide_in_left = AnimationUtils.loadAnimation(MainActivity.this,
 				android.R.anim.slide_in_left);
 		slide_out_right = AnimationUtils.loadAnimation(MainActivity.this,
@@ -47,8 +43,7 @@ public class MainActivity extends Activity {
 
 	private void findViews() {
 		viewSwitcher = (ViewSwitcher) findViewById(R.id.viewswitcher);
-		onePlayer = (Button) findViewById(R.id.button_mainLayout_onePlayer);
-		twoPlayer = (Button) findViewById(R.id.button_mainLayout_twoPlayer);
+		playButton = (Button) findViewById(R.id.button_mainLayout_play);
 		circleImageView = (ImageView) findViewById(R.id.imageview_mainLayout_circle);
 		crossImageView = (ImageView) findViewById(R.id.imageview_mainLayout_cross);
 	}
@@ -59,20 +54,11 @@ public class MainActivity extends Activity {
 	}
 
 	private void listners() {
-		onePlayer.setOnClickListener(new OnClickListener() {
+
+		playButton.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-				isComputerPlayer = true;
-				viewSwitcher.showNext();
-			}
-		});
-
-		twoPlayer.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				isComputerPlayer = false;
 				viewSwitcher.showNext();
 			}
 		});
@@ -98,14 +84,10 @@ public class MainActivity extends Activity {
 	
 	private void startActivityWithInfo(int iconValue){
 		Intent intent = new Intent(MainActivity.this, GameActivity.class);
+		/*** Passing data to another activity on the basis of user choice image***/
 		intent.putExtra(Constants.ICON, iconValue);
-		intent.putExtra(Constants.COMPUTER_PLAYER, isComputerPlayer);
 		startActivity(intent);
+		finish();
 	}
-	
-	@Override
-	protected void onRestart() {
-		viewSwitcher.showPrevious();
-		super.onRestart();
-	}
+
 }
